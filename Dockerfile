@@ -18,7 +18,7 @@ RUN apk update \
   & rm -rf /glibc-${GLIBC_VERSION}.apk \
   && rm -rf /glibc-bin-${GLIBC_VERSION}.apk \
   && wget $DOWNLOAD_URL \
-  && tar -xaf /$FILENAME \
+  && tar xvjf /$FILENAME \
   && mkdir /root/.bitmonero \
   && mv /monero-${VERSION}/* /usr/local/bin/ \
   && rm -rf /monero-${VERSION}/ \
