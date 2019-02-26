@@ -1,7 +1,7 @@
 FROM alpine:latest
 MAINTAINER Tyler Baker <forcedinductionz@gmail.com>
 
-ARG VERSION=v0.13.0.4
+ARG VERSION=v0.14.0.0
 ARG GLIBC_VERSION=2.28-r0
 
 ENV FILENAME monero-linux-x64-${VERSION}.tar.bz2
