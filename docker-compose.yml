@@ -1,0 +1,13 @@
+version: '3.2'
+
+services:
+  monero:
+    image: fullnodes/monero:latest
+    restart: always
+    network_mode: "host"
+    tty: true
+    volumes:
+      - monero:/root/.bitcoin
+
+volumes:
+    monero:

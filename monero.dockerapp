@@ -1,0 +1,21 @@
+version: 0.1.0
+name: monero
+description: Monero daemon and cli tools
+
+---
+
+version: '3.2'
+
+services:
+  monero:
+    image: fullnodes/monero:latest
+    restart: always
+    network_mode: "host"
+    tty: true
+    volumes:
+      - monero:/root/.bitcoin
+
+volumes:
+    monero:
+
+---

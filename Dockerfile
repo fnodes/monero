@@ -1,33 +1,31 @@
-FROM alpine:latest
+FROM debian:stable-slim
 MAINTAINER Tyler Baker <forcedinductionz@gmail.com>
 
-ARG VERSION=v0.14.1.0
-ARG GLIBC_VERSION=2.28-r0
+ARG VERSION=v0.15.0.0
 
-ENV FILENAME monero-linux-x64-${VERSION}.tar.bz2
-ENV DOWNLOAD_URL https://dlsrc.getmonero.org/cli/${FILENAME}
+RUN apt-get update && apt-get install -y \
+    wget \
+    ca-certificates \
+    file \
+    bzip2 \
+  && rm -rf /var/lib/apt/lists/*
 
-RUN apk update \
-  && apk --no-cache add wget tar bash ca-certificates \
-  && wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
-  && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
-  && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-bin-${GLIBC_VERSION}.apk \
-  && apk --no-cache add glibc-${GLIBC_VERSION}.apk \
-  && apk --no-cache add glibc-bin-${GLIBC_VERSION}.apk \
-  && apk --no-cache add eudev-libs \
-  && rm -rf /glibc-${GLIBC_VERSION}.apk \
-  && rm -rf /glibc-bin-${GLIBC_VERSION}.apk \
-  && wget $DOWNLOAD_URL \
-  && tar xvf $FILENAME \
+RUN file /bin/bash | grep -q x86-64 && echo x64 > /tmp/arch || true
+RUN file /bin/bash | grep -q aarch64 && echo armv8 > /tmp/arch || true
+RUN file /bin/bash | grep -q EABI5 && echo armv7 > /tmp/arch || true
+
+WORKDIR /src
+
+RUN wget https://dlsrc.getmonero.org/cli/monero-linux-$(cat /tmp/arch)-${VERSION}.tar.bz2 \
+  && tar xvf monero-linux-$(cat /tmp/arch)-${VERSION}.tar.bz2 \
   && mkdir /root/.bitmonero \
-  && mv monero-x86_64-linux-gnu/* /usr/local/bin/ \
-  && rm -rf /monero-x86_64-linux-gnu/ \
-  && rm -rf /$FILENAME \
-  && apk del tar wget ca-certificates
+  && mv monero-*/* /usr/local/bin/ \
+  && rm -rf monero-*/ \
+  && rm -rf monero-linux-$(cat /tmp/arch)-${VERSION}.tar.bz2
 
 EXPOSE 18080 18081
 
-ADD ./bin/docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
-RUN chmod a+x /usr/local/bin/docker_entrypoint.sh
+ADD bin/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod a+x /usr/local/bin/entrypoint.sh
 
-ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
