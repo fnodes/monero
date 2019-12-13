@@ -1,7 +1,7 @@
 FROM debian:stable-slim
 MAINTAINER Tyler Baker <forcedinductionz@gmail.com>
 
-ARG VERSION=v0.15.0.0
+ARG VERSION=v0.15.0.1
 
 RUN apt-get update && apt-get install -y \
     wget \
