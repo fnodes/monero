@@ -37,7 +37,7 @@ RUN cat hashes.txt | grep monero-linux-$(cat /tmp/arch)-${VERSION}.tar.bz2 | cut
 
 EXPOSE 18080 18081
 
-ADD entrypoint.sh /usr/local/bin/entrypoint.sh
+ADD bin/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod a+x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
